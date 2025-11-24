@@ -4,8 +4,8 @@
 <!--
     index.html
     Author: Francis Hampton
-    Date: 2025-11-12
-    Purpose: Personal portfolio page (About, Projects, Contact).
+    Date: 2025-11-23
+    Purpose: Interactive portfolio profile page
 -->
 
 <head>
@@ -24,6 +24,13 @@
         body {
             font-family: 'Times New Roman', Times, serif;
             margin: 20px;
+            background-color: white;
+            color: black;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #f0f0f0;
         }
 
         header, nav, main, footer {
@@ -31,7 +38,13 @@
         }
 
         nav a {
-            margin-right: 10px;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+
+        #skills-list {
+            margin: 10px 0;
+            padding-left: 20px;
         }
 
         form input, form textarea {
@@ -40,8 +53,10 @@
             width: 300px;
         }
 
+        .toggle-container {
+            margin-top: 10px;
+        }
     </style>
-
 </head>
 
 <body>
@@ -50,13 +65,19 @@
     <header>
         <h1 id="welcome-message">Welcome to My Portfolio!</h1>
 
+        <div class="toggle-container">
+            <label>
+                <input type="checkbox" id="dark-mode-toggle"> Dark Mode
+            </label>
+        </div>
+
         <nav>
             <!-- Main navigation -->
             <a href="#about">About</a>
+            <a href="#skills">Skills</a>
             <a href="#projects">Projects</a>
             <a href="#contact">Contact</a>
         </nav>
-
     </header>
 
     <main>
@@ -67,6 +88,11 @@
             <h2>About Me</h2>
             <p>Hello! My name is Francis. I'm a web development student passionate about creating user-
             friendly websites and learning new technologies.</p>
+        </section>
+
+        <section id="skills">
+            <h2>My Skills</h2>
+            <ul id="skills-list"></ul>
         </section>
 
         <section id="projects">
@@ -88,21 +114,18 @@
 
         </section>
 
-                <section id="contact">
-                        <!-- Contact section -->
-                        <h2>Contact Me!</h2>
+        <section id="contact">
+            <!-- Contact section -->
+            <h2>Contact Me!</h2>
 
-                        <form>
-                                <!-- Note: Might need to add <label for="..."> for each input for accessibility -->
-                                <input type="text" name="senderName" placeholder="Your Name" required>
-                                <input type="email" name="senderEmail" placeholder="Your Email Address" required>
-                                <input type="text" name="subject" placeholder="Subject" required>
-                                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                                <button type="submit">Submit</button>
-                        </form>
-
-                </section>
-
+            <form id="contact-form">
+            <!-- Note: Might need to add <label for="..."> for each input for accessibility -->
+                <input type="text" id="name-field" placeholder="Your Name" required>
+                <input type="email" id="email-field" placeholder="Your Email Address" required>
+                <input type="text" id="subject-field" placeholder="Subject" required>
+                <textarea id="message-field" placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit">Submit</button>
+        </section>
     </main>
 
     <!-- Footer
@@ -115,7 +138,7 @@
     <script>
         /*
          * Simple welcome interaction
-         * - Purpose: prompt the visitor for a name and personalize the welcome heading.
+         * - Purpose: prompt visitor for a name and personalize the welcome heading.
          * - Inputs: user response from prompt()
          * - Outputs: updates #welcome-message and shows a greeting via alert()
         */
@@ -124,15 +147,64 @@
         let userName = prompt("What is your name?");
 
         // If provided, personalize the heading and greet the user
-        if (userName) {
+        // Adding Conditional Logic to greet me (Francis) if my name is entered
+        if (userName && userName.toLowerCase() === "francis") {
+            document.getElementById("welcome-message").innerText = "Welcome back, Francis!";
+        } 
+        else if (userName) {
             document.getElementById("welcome-message").innerText = "Welcome, " + userName + "!";
             alert("Hello, " + userName + "! Enjoy browsing my portfolio.");
-        } else {
+        } 
+        else {
             // Generic welcome when no name provided or user cancels
             alert("Welcome to my portfolio!");
         }
+
+        /*
+         * Skills loop
+         * - Purpose: loop to display skillls on the portfolio page in its section
+         * - Inputs: none from the user/visitor
+         * - Outputs: appends to a list and prints it on the page
+        */
+
+        // Loop to display skills
+        const skills = ["HTML5", "CSS3", "JavaScript", "Git & GitHub", "Responsive Design"];
+        const skillsList = document.getElementById("skills-list");
+
+        for (let i = 0; i < skills.length; i++) {
+            const li = document.createElement("li");
+            li.textContent = skills[i];
+            skillsList.appendChild(li);
+        }
+
+        /*
+         * Mode Toggle
+         * - Purpose: all user/visitor to toggle a dark mode on and off
+         * - Inputs: user choice for dark mode option (y/n)
+         * - Outputs: switches between modes with different style attributes
+        */
+
+        // Dark mode toggle
+        const toggle = document.getElementById("dark-mode-toggle");
+        toggle.addEventListener("change", function () {
+            document.body.classList.toggle("dark-mode");
+        });
+
+        /*
+         * Event Listener
+         * - Purpose: add compatible event listener to the submit button for the contact form
+         * - Inputs: none from the user/visitor
+         * - Outputs: Adds additional alert
+        */
+
+        // Form submit event listener
+        const form = document.getElementById("contact-form");
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const nameInput = document.getElementById("name-field").value;
+            alert(`Thank you, ${nameInput}! Your message has been sent.`);
+        });
+
     </script>
-
 </body>
-
 </html>
