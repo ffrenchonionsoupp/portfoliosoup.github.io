@@ -4,8 +4,8 @@
 <!--
     index.html
     Author: Francis Hampton
-    Date: 2025-11-23
-    Purpose: Interactive portfolio profile page
+    Date: 2025-11-30
+    Purpose: Interactive Portfolio - Week 3
 -->
 
 <head>
@@ -17,7 +17,7 @@
         <!-- Page description (SEO) - update when content/purpose changes -->
         <meta name="description" content="Personal Portfolio Page">
 
-        <title>My Portfolio</title>
+        <title>Interactive Portfolio - Week 3</title>
 
         <!-- Stylesheet placeholder, will be moved to a CSS form eventually -->
         <style>
@@ -26,7 +26,12 @@
             margin: 20px;
             background-color: white;
             color: black;
+            transition: background-color 0.5s, color 0.5s;
         }
+
+        section {
+            margin-bottom: 30px;
+        }   
 
         .dark-mode {
             background-color: #121212;
@@ -56,6 +61,21 @@
         .toggle-container {
             margin-top: 10px;
         }
+
+        #confirmation {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #loading {
+            color: blue;
+            font-style: italic;
+        }
+
+        .highlight {
+            background-color: #ffffcc;
+        }
     </style>
 </head>
 
@@ -63,7 +83,7 @@
     <!-- Header
          - Contains site title and primary internal navigation. -->
     <header>
-        <h1 id="welcome-message">Welcome to My Portfolio!</h1>
+        <h1 id="welcome-message">Welcome to My Interactive Portfolio!</h1>
 
         <div class="toggle-container">
             <label>
@@ -86,8 +106,9 @@
                  - Short bio; might add more.
                  - Consider linking to a longer resume/CV. -->
             <h2>About Me</h2>
-            <p>Hello! My name is Francis. I'm a web development student passionate about creating user-
-            friendly websites and learning new technologies.</p>
+            <p>Hello! My name is Francis. I'm a web development student passionate about creating user-friendly
+            websites and learning new technologies. Currently, I am learning JavaScript and building 
+            a dynamic profile page as a part of my coursework.</p>
         </section>
 
         <section id="skills">
@@ -98,7 +119,9 @@
         <section id="projects">
             <!-- Projects
                  - Placeholders for now. -->
-            <h2>Projects</h2>
+            <h2 id="projects-heading">Projects</h2>
+
+            <!-- Dynamic project paragraph will be inserted here -->
 
             <a href="https://github.com/placeholder/project1" target="_blank" rel="noopener noreferrer">
                 <img src="https://via.placeholder.com/150" alt="Project 1">
@@ -125,6 +148,8 @@
                 <input type="text" id="subject-field" placeholder="Subject" required>
                 <textarea id="message-field" placeholder="Your Message" rows="5" required></textarea>
                 <button type="submit">Submit</button>
+                <div id="response-area"></div>
+            </form>
         </section>
     </main>
 
@@ -203,6 +228,58 @@
             event.preventDefault();
             const nameInput = document.getElementById("name-field").value;
             alert(`Thank you, ${nameInput}! Your message has been sent.`);
+        });
+
+        /*
+         * Week Three Additions
+         * - Purpose: Show an understanding of JavaScript by dynamically interacting with the DOM
+         *            New elements will be created, existing content will be updated, and user 
+         *            interactions will be responded to.
+         * - Inputs: Loading the site will append a new project with an alert of indication, and
+         *           and sending a message will result in a timed response with a loading or message 
+         *           sent message.
+         * - Outputs: See above for what will result from interactivity within the site.
+         */ 
+
+         // === 1. Dynamically add a new element ===
+        const projectSection = document.getElementById("projects");
+        const newProject = document.createElement("p");
+        // New project placeholder text
+        newProject.textContent = "Recently added: An interactive JavaScript quiz application!";
+        projectSection.appendChild(newProject);
+
+        // === 2. Reference existing elements and update them ===
+        const mainHeading = document.querySelector("#welcome-message");
+        mainHeading.textContent = "Welcome to My JavaScript-Enhanced Portfolio";
+
+        const projectsHeading = document.getElementById("projects-heading");
+        projectsHeading.classList.add("highlight");
+
+        // === 3. Add timing function to form submission ===
+        //const form = document.getElementById("contact-form");
+        const responseArea = document.getElementById("response-area");
+
+        form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Clear previous response
+        responseArea.innerHTML = "";
+
+        // Show loading message
+        const loading = document.createElement("p");
+        loading.id = "loading";
+        loading.textContent = "Sending message...";
+        responseArea.appendChild(loading);
+
+        // Simulate delay with setTimeout
+        setTimeout(() => {
+            loading.remove();
+
+            const confirmation = document.createElement("p");
+            confirmation.id = "confirmation";
+            confirmation.textContent = "Message sent successfully! Thank you.";
+            responseArea.appendChild(confirmation);
+        }, 2500); // 2.5 seconds delay
         });
 
     </script>
