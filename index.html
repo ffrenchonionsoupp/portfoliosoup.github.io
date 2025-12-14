@@ -1,385 +1,320 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
-<!--
-    index.html
-    Author: Francis Hampton
-    Date: 2025-12-07
-    Purpose: Interactive Portfolio - Week 4
--->
-
 <head>
-        <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Profile Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: white;
+      color: black;
+    }
 
-        <!-- Primary metadata: charset and viewport should be first for proper rendering -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    .dark-mode {
+      background-color: #121212;
+      color: #f0f0f0;
+    }
 
-        <!-- Page description (SEO) - update when content/purpose changes -->
-        <meta name="description" content="Personal Portfolio Page">
+    header, nav, main, footer {
+      margin-bottom: 20px;
+    }
 
-        <title>Interactive Portfolio - Week 4</title>
+    nav a {
+      margin-right: 15px;
+      text-decoration: none;
+    }
 
-        <!-- Stylesheet placeholder, will be moved to a CSS form eventually -->
-        <style>
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            margin: 20px;
-            background-color: white;
-            color: black;
-            transition: background-color 0.5s, color 0.5s;
-        }
+    #skills-list {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
 
-        section {
-            margin-bottom: 30px;
-        }   
+    form input, form textarea {
+      display: block;
+      margin-bottom: 10px;
+      width: 300px;
+    }
 
-        .dark-mode {
-            background-color: #121212;
-            color: #f0f0f0;
-        }
+    .toggle-container {
+      margin-top: 10px;
+    }
 
-        header, nav, main, footer {
-            margin-bottom: 20px;
-        }
+    /* === Modal Styles === */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
 
-        nav a {
-            margin-right: 15px;
-            text-decoration: none;
-        }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
 
-        #skills-list {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
+    .modal.hidden {
+      display: none;
+    }
 
-        form input, form textarea {
-            display: block;
-            margin-bottom: 10px;
-            width: 300px;
-        }
+    .close-button {
+      position: absolute;
+      top: 0.5rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
 
-        .toggle-container {
-            margin-top: 10px;
-        }
+    /* === Tooltip Styles === */
+    .tooltip {
+      position: relative;
+    }
 
-        #confirmation {
-            color: green;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+    }
 
-        #loading {
-            color: blue;
-            font-style: italic;
-        }
+    .tooltip:hover::after {
+      opacity: 1;
+    }
 
-        .highlight {
-            background-color: #ffffcc;
-        }
+    /* === Project Card Styles === */
+    .project-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
 
-        /* === Modal Styles === */
-        .modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+    .project-card {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px;
+      width: 300px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
 
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-        }
+    .project-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
 
-        .modal.hidden {
-            display: none;
-        }
+    .project-card h3 {
+      margin: 10px 0 5px;
+    }
 
-        .close-button {
-            position: absolute;
-            top: 0.5rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
+    .project-card p {
+      margin-bottom: 10px;
+    }
 
-        /* === Tooltip Styles === */
-        .tooltip {
-            position: relative;
-        }
-
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: #fff;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 100;
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
-        }
-    </style>
+    .project-card a {
+      text-decoration: none;
+      color: #0077cc;
+    }
+  </style>
 </head>
-
 <body>
-    <!-- Modal -->
-    <div id="welcomeModal" class="modal hidden">
-        <div class="modal-content" role="dialog">
-        <span class="close-button" id="closeModal">&times;</span>
-        <h2>🛠️ Page Under Development</h2>
-        <p>This portfolio is currently a work in progress.</p>
-        </div>
+
+  <!-- Modal -->
+  <div id="welcomeModal" class="modal hidden">
+    <div class="modal-content" role="dialog">
+      <span class="close-button" id="closeModal">&times;</span>
+      <h2>🛠️ Page Under Development</h2>
+      <p>This portfolio is currently a work in progress.</p>
     </div>
+  </div>
 
-    <!-- Header
-         - Contains site title and primary internal navigation. -->
-    <header>
-        <h1 id="welcome-message">Welcome to My Interactive Portfolio!</h1>
+  <header>
+    <h1 id="welcome-message">Welcome to My Portfolio</h1>
+    <div class="toggle-container">
+      <label>
+        <input type="checkbox" id="dark-mode-toggle"> Dark Mode
+      </label>
+    </div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-        <div class="toggle-container">
-            <label>
-                <input type="checkbox" id="dark-mode-toggle"> Dark Mode
-            </label>
-        </div>
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <p id="intro-text">I am a web developer learning to build interactive pages.</p>
+    </section>
 
-        <nav>
-            <!-- Main navigation -->
-            <a href="#about">About</a>
-            <a href="#skills">Skills</a>
-            <a href="#projects">Projects</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
+    <section id="skills">
+      <h2>My Skills</h2>
+      <ul id="skills-list"></ul>
+    </section>
 
-    <main>
-        <section id="about">
-            <!-- About section
-                 - Short bio; might add more.
-                 - Consider linking to a longer resume/CV. -->
-            <h2>About Me</h2>
-            <p>Hello! My name is Francis. I'm a web development student passionate about creating user-friendly
-            websites and learning new technologies. Currently, I am learning JavaScript and building 
-            an interactive, dynamic profile page as a part of my coursework.</p>
-        </section>
+    <section id="projects">
+      <h2>My Projects</h2>
+      <div id="project-container" class="project-container"></div>
+    </section>
 
-        <section id="skills">
-            <h2>My Skills</h2>
-            <ul id="skills-list"></ul>
-        </section>
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form id="contact-form">
+        <input type="text" id="name-field" placeholder="Your Name" required>
+        <input type="email" id="email-field" placeholder="Your Email Address" required>
+        <input type="text" id="subject-field" placeholder="Subject" required>
+        <textarea id="message-field" placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit" class="tooltip" data-tooltip="Click to send your message">Submit</button>
+      </form>
+    </section>
+  </main>
 
-        <section id="projects">
-            <!-- Projects
-                 - Placeholders for now. -->
-            <h2 id="projects-heading">Projects</h2>
+  <footer>
+    <p>&copy; 2025 My Name</p>
+  </footer>
 
-            <!-- Dynamic project paragraph will be inserted here -->
+  <script>
+    // Modal logic
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!sessionStorage.getItem("modal_shown")) {
+        const modal = document.getElementById("welcomeModal");
+        modal.classList.remove("hidden");
 
-            <a href="https://github.com/placeholder/project1" target="_blank" rel="noopener noreferrer">
-                <img src="https://via.placeholder.com/150" alt="Project 1">
-            </a>
-
-            <a href="https://github.com/placeholder/project2" target="_blank" rel="noopener noreferrer">
-                <img src="https://via.placeholder.com/150" alt="Project 2">
-            </a>
-
-            <a href="https://github.com/placeholder/project3" target="_blank" rel="noopener noreferrer">
-                <img src="https://via.placeholder.com/150" alt="Project 3">
-            </a>
-
-        </section>
-
-        <section id="contact">
-            <!-- Contact section -->
-            <h2>Contact Me!</h2>
-
-            <form id="contact-form">
-            <!-- Note: Might need to add <label for="..."> for each input for accessibility -->
-                <input type="text" id="name-field" placeholder="Your Name" required>
-                <input type="email" id="email-field" placeholder="Your Email Address" required>
-                <input type="text" id="subject-field" placeholder="Subject" required>
-                <textarea id="message-field" placeholder="Your Message" rows="5" required></textarea>
-                <button type="submit" class="tooltip" data-tooltip="Click to send your message">Submit</button>
-                <div id="response-area"></div>
-            </form>
-        </section>
-    </main>
-
-    <!-- Footer
-         - Copyright and small print. -->
-    <footer>
-        <p>&copy; 2025 Francis Hampton</p>
-    </footer>
-
-    <!-- Page behavior script -->
-    <script>
-        /*
-         * Simple welcome interaction
-         * - Purpose: prompt visitor for a name and personalize the welcome heading.
-         * - Inputs: user response from prompt()
-         * - Outputs: updates #welcome-message and shows a greeting via alert()
-        */
-
-        // Ask visitor for their name (consider replacing prompt with a modal later)
-        let userName = prompt("What is your name?");
-
-        // If provided, personalize the heading and greet the user
-        // Adding Conditional Logic to greet me (Francis) if my name is entered
-        if (userName && userName.toLowerCase() === "francis") {
-            document.getElementById("welcome-message").innerText = "Welcome back, Francis!";
-        } 
-        else if (userName) {
-            document.getElementById("welcome-message").innerText = "Welcome, " + userName + "!";
-            alert("Hello, " + userName + "! Enjoy browsing my portfolio.");
-        } 
-        else {
-            // Generic welcome when no name provided or user cancels
-            alert("Welcome to my portfolio!");
-        }
-
-        /*
-         * Skills loop
-         * - Purpose: loop to display skillls on the portfolio page in its section
-         * - Inputs: none from the user/visitor
-         * - Outputs: appends to a list and prints it on the page
-        */
-
-        // Loop to display skills
-        const skills = ["HTML5", "CSS3", "JavaScript", "Git & GitHub", "Responsive Design"];
-        const skillsList = document.getElementById("skills-list");
-
-        for (let i = 0; i < skills.length; i++) {
-            const li = document.createElement("li");
-            li.textContent = skills[i];
-            skillsList.appendChild(li);
-        }
-
-        /*
-         * Mode Toggle
-         * - Purpose: all user/visitor to toggle a dark mode on and off
-         * - Inputs: user choice for dark mode option (y/n)
-         * - Outputs: switches between modes with different style attributes
-        */
-
-        // Dark mode toggle with persistence
-        const toggle = document.getElementById("dark-mode-toggle");
-        toggle.addEventListener("change", function () {
-        if (this.checked) {
-            document.body.classList.add("dark-mode");
-            localStorage.setItem("dark_mode", "enabled");
-        } else {
-            document.body.classList.remove("dark-mode");
-            localStorage.setItem("dark_mode", "disabled");
-        }
+        document.getElementById("closeModal").addEventListener("click", () => {
+          modal.classList.add("hidden");
+          sessionStorage.setItem("modal_shown", "true");
         });
+      }
 
-        /*
-         * Event Listener
-         * - Purpose: add compatible event listener to the submit button for the contact form
-         * - Inputs: none from the user/visitor
-         * - Outputs: Adds additional alert
-        */
+      // Restore dark mode preference
+      const savedTheme = localStorage.getItem("dark_mode");
+      if (savedTheme === "enabled") {
+        document.body.classList.add("dark-mode");
+        document.getElementById("dark-mode-toggle").checked = true;
+      }
+    });
 
-        // Form submit event listener
-        const form = document.getElementById("contact-form");
-        form.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const nameInput = document.getElementById("name-field").value;
-            alert(`Thank you, ${nameInput}! Your message has been sent.`);
-        });
+    // Skills list
+    const skills = ["HTML5", "CSS3", "JavaScript", "Git & GitHub", "Responsive Design"];
+    const skillsList = document.getElementById("skills-list");
+    skills.forEach(skill => {
+      const li = document.createElement("li");
+      li.textContent = skill;
+      skillsList.appendChild(li);
+    });
 
-        /*
-         * Week Three Additions
-         * - Purpose: Show an understanding of JavaScript by dynamically interacting with the DOM
-         *            New elements will be created, existing content will be updated, and user 
-         *            interactions will be responded to.
-         * - Inputs: Loading the site will append a new project with an alert of indication, and
-         *           and sending a message will result in a timed response with a loading or message 
-         *           sent message.
-         * - Outputs: See above for what will result from interactivity within the site.
-         */ 
+    // Dark mode toggle
+    const toggle = document.getElementById("dark-mode-toggle");
+    toggle.addEventListener("change", function () {
+      if (this.checked) {
+        document.body.classList.add("dark-mode");
+        localStorage.setItem("dark_mode", "enabled");
+      } else {
+        document.body.classList.remove("dark-mode");
+        localStorage.setItem("dark_mode", "disabled");
+      }
+    });
 
-         // === 1. Dynamically add a new element ===
-        const projectSection = document.getElementById("projects");
-        const newProject = document.createElement("p");
-        // New project placeholder text
-        newProject.textContent = "Recently added: An interactive JavaScript quiz application!";
-        projectSection.appendChild(newProject);
+    // Contact form
+    const form = document.getElementById("contact-form");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const nameInput = document.getElementById("name-field").value;
+      const submitButton = form.querySelector("button[type='submit']");
+      const originalText = submitButton.textContent;
 
-        // === 2. Reference existing elements and update them ===
-        const mainHeading = document.querySelector("#welcome-message");
-        mainHeading.textContent = "Welcome to My JavaScript-Enhanced Portfolio";
+      submitButton.textContent = "Sending...";
+      submitButton.disabled = true;
 
-        const projectsHeading = document.getElementById("projects-heading");
-        projectsHeading.classList.add("highlight");
+      setTimeout(() => {
+        alert(`Thank you, ${nameInput}! Your message has been sent.`);
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+        form.reset();
+      }, 2500);
+    });
 
-        // === 3. Add timing function to form submission ===
-        //const form = document.getElementById("contact-form");
-        const responseArea = document.getElementById("response-area");
+    // Projects
+    const storedProjects = sessionStorage.getItem("projects");
 
-        form.addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        // Clear previous response
-        responseArea.innerHTML = "";
-
-        // Show loading message
-        const loading = document.createElement("p");
-        loading.id = "loading";
-        loading.textContent = "Sending message...";
-        responseArea.appendChild(loading);
-
-        // Simulate delay with setTimeout
-        setTimeout(() => {
-            loading.remove();
-
-            const confirmation = document.createElement("p");
-            confirmation.id = "confirmation";
-            confirmation.textContent = "Message sent successfully! Thank you.";
-            responseArea.appendChild(confirmation);
-        }, 2500); // 2.5 seconds delay
-        });
-
-        /*
-         * Week Four Additions
-         */
-
-        // === Show Welcome Modal Once Per Session ===
-        document.addEventListener("DOMContentLoaded", () => {
-        if (!sessionStorage.getItem("modal_shown")) {
-            const modal = document.getElementById("welcomeModal");
-            modal.classList.remove("hidden");
-
-            document.getElementById("closeModal").addEventListener("click", () => {
-            modal.classList.add("hidden");
-            sessionStorage.setItem("modal_shown", "true");
-            });
+    if (!storedProjects) {
+      const projectList = [
+        {
+          title: "Weather App",
+          summary: "Displays real-time weather using OpenWeatherMap API.",
+          image: "https://via.placeholder.com/300x150?text=Weather+App",
+          link: "https://github.com/yourusername/weather-app"
+        },
+        {
+          title: "Task Tracker",
+          summary: "A to-do list app with filtering and localStorage support.",
+          image: "https://via.placeholder.com/300x150?text=Task+Tracker",
+          link: "https://github.com/yourusername/task-tracker"
+        },
+        {
+          title: "Portfolio Website",
+          summary: "A personal site to showcase my work and contact details.",
+          image: "https://via.placeholder.com/300x150?text=Portfolio",
+          link: "https://github.com/yourusername/portfolio"
         }
+      ];
+      sessionStorage.setItem("projects", JSON.stringify(projectList));
+    }
 
-        // === Restore Dark Mode Preference ===
-        const savedTheme = localStorage.getItem("dark_mode");
-        if (savedTheme === "enabled") {
-            document.body.classList.add("dark-mode");
-            document.getElementById("dark-mode-toggle").checked = true;
-        }
-        });
-    </script>
+    const projectArray = JSON.parse(sessionStorage.getItem("projects"));
+    const container = document.getElementById("project-container");
+
+    if (projectArray && container) {
+      projectArray.forEach(project => {
+        const card = document.createElement("div");
+        card.className = "project-card";
+
+        const title = document.createElement("h3");
+        title.textContent = project.title;
+
+        const summary = document.createElement("p");
+        summary.textContent = project.summary;
+
+        const link = document.createElement("a");
+        link.href = project.link;
+        link.target = "_blank";
+
+        const image = document.createElement("img");
+        image.src = project.image;
+        image.alt = project.title + " screenshot";
+
+        link.appendChild(image);
+        card.appendChild(title);
+        card.appendChild(summary);
+        card.appendChild(link);
+
+        container.appendChild(card);
+      });
+    }
+  </script>
+
 </body>
 </html>
